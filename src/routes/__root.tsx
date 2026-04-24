@@ -1,54 +1,81 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+import * as React from "react";
+import * as Sentry from "@sentry/tanstackstart-react";
+import { Header } from "#/components/layout/header";
+import { HeadContent, Scripts, createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import type { QueryClient } from "@tanstack/react-query";
+import { ErrorPage } from "#/components/pages/error";
+import { Toaster } from "sonner";
+import { ThemeProvider } from "#/components/providers/theme-provider";
+// oxlint-disable-next-line import/no-unassigned-import
+import "../globals.css";
 
-import appCss from '../styles.css?url'
+interface AppRouterContext {
+  queryClient: QueryClient;
+}
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<AppRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'TanStack Start Starter',
-      },
-    ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
+        title: "Tanstack Start Template",
       },
     ],
   }),
-  shellComponent: RootDocument,
-})
+  component: RootComponent,
+  errorComponent: props => {
+    // Capture SSR rendering exceptions manually as per documentation
+    if (typeof window === "undefined") {
+      Sentry.captureException(props.error);
+    }
+
+    React.useEffect(() => {
+      Sentry.captureException(props.error);
+    }, [props.error]);
+
+    return (
+      <RootDocument>
+        <ErrorPage error={props.error} reset={props.reset} />
+      </RootDocument>
+    );
+  },
+  notFoundComponent: () => {
+    return (
+      <RootDocument>
+        <ErrorPage error="The page you are looking for does not exist." title="404 - Not Found" />
+      </RootDocument>
+    );
+  },
+});
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Header />
+      <Outlet />
+    </RootDocument>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        <ThemeProvider defaultTheme="dark" storageKey="template-theme">
+          {children}
+        </ThemeProvider>
         <Scripts />
+        <Toaster richColors />
       </body>
     </html>
-  )
+  );
 }
