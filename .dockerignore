@@ -1,0 +1,13 @@
+node_modules
+.output
+.nitro
+.vinxi
+.tanstack
+.git
+.env
+.turbo
+data
+docs
+scratch
+playwright.config.ts
+tests
