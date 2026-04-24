@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-04-24
+
+### Fixed
+
+- **CI Pipeline**: Fixed environment variable validation failures in CI by ensuring `.env` is correctly provisioned from `.env.example` across all jobs.
+- **Git Security**: Resolved "dubious ownership" errors in the Playwright container by adding global safe directory configurations.
+- **Linting**: Migrated `oxlint` configuration from TypeScript to JSON to ensure compatibility with Node.js environments that lack native ESM TypeScript support.
+
 ## [1.0.0] - 2026-04-23
 
 ### Added
