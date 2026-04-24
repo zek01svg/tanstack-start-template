@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-04-23
+## [1.0.1] - 2026-04-24
+
+### Fixed
+
+- **CI Pipeline**: Stabilized the testing pipeline by explicitly defining `PLAYWRIGHT_BROWSERS_PATH` and ensuring `.env` is correctly provisioned from `.env.example` in the CI container.
+- **Testing**: Resolved Playwright browser detection issues in Docker by mapping the correct binary paths and configuring `turbo.json` environment variables.
+- **Git Security**: Resolved "dubious ownership" errors in the CI environment by adding global safe directory configurations.
+- **Configuration**: Updated `.env.example` to use the correct URL format for `VITE_SENTRY_DSN`, preventing initialization errors.
+- **Linting**: Migrated `oxlint` configuration to JSON to avoid ESM/TypeScript parsing errors in environments without native TypeScript execution.
+
+## [1.0.0] - 2026-04-24
 
 ### Added
 

@@ -1,7 +1,6 @@
-import { defineConfig } from "oxlint";
-
-export default defineConfig({
-  plugins: [
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
     "typescript",
     "unicorn",
     "oxc",
@@ -10,17 +9,17 @@ export default defineConfig({
     "vitest",
     "jsx-a11y",
     "promise",
-    "node",
+    "node"
   ],
-  categories: {
-    correctness: "error",
-    suspicious: "error",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
   },
-  rules: {
+  "rules": {
     "no-alert": "error",
     "no-console": "error",
     "no-debugger": "error",
-    eqeqeq: ["error", "always"],
+    "eqeqeq": ["error", "always"],
     "no-var": "error",
     "prefer-const": "error",
     "import/no-cycle": "error",
@@ -42,12 +41,12 @@ export default defineConfig({
 
     "unicorn/no-null": "off",
 
-    "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
     "typescript/consistent-type-imports": [
       "warn",
-      { prefer: "type-imports", fixStyle: "separate-type-imports" },
+      { "prefer": "type-imports", "fixStyle": "separate-type-imports" }
     ],
-    "typescript/no-unnecessary-condition": ["error", { allowConstantLoopConditions: true }],
+    "typescript/no-unnecessary-condition": ["error", { "allowConstantLoopConditions": true }],
     "typescript/no-non-null-assertion": "error",
     "typescript/no-explicit-any": "warn",
 
@@ -58,29 +57,29 @@ export default defineConfig({
     "no-restricted-imports": [
       "error",
       {
-        name: "zod",
-        message: "Use `import { z } from 'zod/v4'` instead to ensure v4.",
-      },
-    ],
+        "name": "zod",
+        "message": "Use `import { z } from 'zod/v4'` instead to ensure v4."
+      }
+    ]
   },
-  overrides: [
+  "overrides": [
     {
-      files: ["tests/**", "instrument.server.mjs"],
-      rules: {
-        "no-console": "off",
-      },
+      "files": ["tests/**", "instrument.server.mjs"],
+      "rules": {
+        "no-console": "off"
+      }
     },
     {
-      files: ["src/env.ts", "playwright.config.ts", "instrument.server.mjs"],
-      rules: {
-        "node/no-process-env": "off",
-      },
-    },
+      "files": ["src/env.ts", "playwright.config.ts", "instrument.server.mjs"],
+      "rules": {
+        "node/no-process-env": "off"
+      }
+    }
   ],
-  env: {
-    builtin: true,
-    node: true,
-    browser: true,
+  "env": {
+    "builtin": true,
+    "node": true,
+    "browser": true
   },
-  ignorePatterns: [".output/**", ".nitro/**", "node_modules/**", "src/routeTree.gen.ts"],
-});
+  "ignorePatterns": [".output/**", ".nitro/**", "node_modules/**", "src/routeTree.gen.ts"]
+}

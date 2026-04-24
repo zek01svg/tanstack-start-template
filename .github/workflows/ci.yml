@@ -36,10 +36,20 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-jammy
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: cp .env.example .env
+
+      - name: Fix git dubious ownership
+        run: git config --global --add safe.directory '*'
+
       - name: Install unzip
         run: apt-get update && apt-get install -y unzip
 
@@ -50,8 +60,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
       - name: Run tests with Turbo
         run: bun run turbo test:unit test:e2e
