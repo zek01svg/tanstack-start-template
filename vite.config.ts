@@ -1,21 +1,38 @@
-import { defineConfig } from 'vite'
-import { devtools } from '@tanstack/devtools-vite'
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import tailwindcss from "@tailwindcss/vite";
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig, createLogger, loadEnv } from "vite";
 
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+const logger = createLogger();
+const originalWarn = logger.warn;
 
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import { nitro } from 'nitro/vite'
+logger.warn = (msg, options) => {
+  if (msg.includes("Failed to load source map")) return;
+  originalWarn(msg, options);
+};
 
-const config = defineConfig({
-  resolve: { tsconfigPaths: true },
-  plugins: [
-    devtools(),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact(),
-  ],
-})
+const config = defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
 
-export default config
+  return {
+    customLogger: logger,
+    resolve: { tsconfigPaths: true },
+    plugins: [
+      devtools(),
+      nitro({ rollupConfig: { external: [/^@sentry\//] } }),
+      tailwindcss(),
+      tanstackStart(),
+      ...sentryTanstackStart({
+        org: env.VITE_SENTRY_ORG,
+        project: env.VITE_SENTRY_PROJECT,
+        authToken: env.SENTRY_AUTH_TOKEN,
+      }),
+      viteReact(),
+    ],
+  };
+});
+
+export default config;
