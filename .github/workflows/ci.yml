@@ -40,6 +40,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Fix git dubious ownership
+        run: git config --global --add safe.directory '*'
+
       - name: Install unzip
         run: apt-get update && apt-get install -y unzip
 
