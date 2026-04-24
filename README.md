@@ -1,204 +1,88 @@
-Welcome to your new TanStack Start app! 
+# TanStack Start Template
 
-# Getting Started
+A premium, batteries-included template for building modern web applications with TanStack Start, Nitro, Better Auth, and Drizzle ORM. Featuring a refined **Stark** hyper-minimalist design system.
 
-To run this application:
+## 🚀 Features
+
+- **SSR & Routing**: [TanStack Start](https://tanstack.com/start) for seamless SSR and type-safe routing.
+- **Server Engine**: [Nitro](https://nitro.unjs.io/) for high-performance server-side logic.
+- **Authentication**: [Better Auth](https://better-auth.com/) for email OTP sign-in/sign-up, Google OAuth, and passkey support.
+- **Database**: [Drizzle ORM](https://orm.drizzle.team/) with PostgreSQL (`pg`).
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) for ultra-fast utility-first styling.
+- **Theme System**: Class-based light/dark switching with [next-themes](https://github.com/pacocoursey/next-themes), with system preference handled by the provider.
+- **Architecture**: Modular feature-based structure (`src/features`) for scalable development.
+- **Design**: Hyper-minimalist aesthetic with centered typography and subtle Oklch gradients.
+- **Observability**: LogTape-backed structured logging with a [Sentry](https://sentry.io/) sink for error tracking and performance monitoring.
+- **Developer Experience**:
+  - [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) & [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html) for lightning-fast linting and formatting.
+  - [Turbo](https://turbo.build/) for efficient task orchestration.
+  - [Playwright](https://playwright.dev/) for E2E testing in `tests/e2e`.
+  - [Vitest](https://vitest.dev/) for unit and component tests in `tests/unit`.
+  - [Lefthook](https://github.com/evilmartians/lefthook) for flexible, fast git hooks.
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- [Bun](https://bun.sh/) (v1.3.13 or later)
+- [Docker](https://www.docker.com/) (for local database)
+
+### Setup
+
+1. **Install dependencies**:
+
+   ```bash
+   bun install
+   ```
+
+2. **Environment Variables**:
+   Copy `.env.example` to `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Update the variables with your configuration.
+
+3. **Database**:
+   Start the database using Docker Compose:
+
+   ```bash
+   docker compose up -d
+   ```
+
+   Push the schema to the database:
+
+   ```bash
+   bun run db:push
+   ```
+
+4. **Run Development Server**:
+   ```bash
+   bun run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🧪 Testing
+
+- **Unit**: `bun run test:unit`
+- **E2E**: `bun run test:e2e`
+- **Interactive E2E**: `bunx playwright test --ui`
+
+## 🐳 Deployment
+
+The project is ready for Dockerized deployment.
 
 ```bash
-bun install
-bun --bun run dev
+docker build -t tanstack-start-template .
+docker run -p 3000:3000 tanstack-start-template
 ```
 
-# Building For Production
+## 🏛️ Documentation
 
-To build this application for production:
+- **[Architecture](./docs/ARCHITECTURE.md)**: Deep dive into the project structure and data flow.
+- **[Design System](./docs/DESIGN.md)**: Details on the aesthetic and design tokens.
+- **[Agents Guide](./docs/AGENTS.md)**: Practical instructions for working in this codebase.
+- **[Changelog](./docs/CHANGELOG.md)**: Recorded changes and version history.
 
-```bash
-bun --bun run build
-```
-
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
-
-```bash
-bun --bun run test
-```
-
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `bun install @tailwindcss/vite tailwindcss -D`
-
-## Linting & Formatting
-
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+---
