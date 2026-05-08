@@ -11,6 +11,8 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/instrument.server.mjs ./instrument.server.mjs
+COPY --from=builder /app/src ./src
 EXPOSE 3000
 
-CMD ["bun", "--bun", ".output/server/index.mjs"]
+CMD ["bun", "--bun", "--import", "./instrument.server.mjs", ".output/server/index.mjs"]

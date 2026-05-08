@@ -5,7 +5,6 @@ node_modules
 .tanstack
 .git
 .env
-.turbo
 data
 docs
 scratch

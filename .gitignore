@@ -15,7 +15,6 @@ todos.json
 bun.lockb
 playwright-report
 test-results
-.turbo
 coverage
 data
 scratch
