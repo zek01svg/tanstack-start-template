@@ -8,6 +8,7 @@ This project follows a modern SSR architecture using TanStack Start and Nitro.
 - **Server**: [Nitro](https://nitro.unjs.io/) - The open engine for serving applications. It handles the server-side logic and deployment presets.
 - **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A lightweight, type-safe ORM for PostgreSQL.
 - **Auth**: [Better Auth](https://better-auth.com/) - Email OTP, Google OAuth, and passkey support.
+- **Session Cache**: [Upstash Redis](https://upstash.com/) (`@upstash/redis`) - HTTP-based Redis client used as Better Auth's secondary storage for distributed session caching.
 - **Theme**: [next-themes](https://github.com/pacocoursey/next-themes) - Class-based theme management on `html` with a mounted client toggle.
 
 ## 📂 Directory Structure
@@ -53,6 +54,12 @@ This project follows a modern SSR architecture using TanStack Start and Nitro.
 ## 🔐 Authentication
 
 Authentication is handled by **Better Auth**. The app currently supports Google OAuth, email OTP sign-in/sign-up, passkey sign-in, and optional passkey enrollment after a successful sign-up verification.
+
+### Session Storage
+
+Better Auth is configured with a `secondaryStorage` adapter backed by **Upstash Redis** (`src/lib/redis.ts`). Session tokens are written to Redis on creation and read from it on every request, offloading hot-path lookups from PostgreSQL and enabling consistent sessions across multiple app instances.
+
+The `@upstash/redis` client communicates over HTTP, making it compatible with both the managed Upstash cloud service (production) and a self-hosted Redis instance fronted by the [Serverless Redis HTTP (SRH)](https://github.com/hiett/serverless-redis-http) adapter (local development via Docker Compose).
 
 ## 🎨 Styling
 
