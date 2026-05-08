@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SentryExampleRouteImport } from './routes/sentry-example'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUploadUrlRouteImport } from './routes/api/upload-url'
 import { Route as ApiSentryExampleRouteImport } from './routes/api/sentry-example'
 import { Route as ApiSendEmailRouteImport } from './routes/api/send-email'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
@@ -29,6 +32,11 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SentryExampleRoute = SentryExampleRouteImport.update({
   id: '/sentry-example',
   path: '/sentry-example',
@@ -39,9 +47,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUploadUrlRoute = ApiUploadUrlRouteImport.update({
+  id: '/api/upload-url',
+  path: '/api/upload-url',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSentryExampleRoute = ApiSentryExampleRouteImport.update({
@@ -67,83 +85,104 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/sentry-example': typeof SentryExampleRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/api/health': typeof ApiHealthRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/api/sentry-example': typeof ApiSentryExampleRoute
+  '/api/upload-url': typeof ApiUploadUrlRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/sentry-example': typeof SentryExampleRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/api/health': typeof ApiHealthRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/api/sentry-example': typeof ApiSentryExampleRoute
+  '/api/upload-url': typeof ApiUploadUrlRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/sentry-example': typeof SentryExampleRoute
+  '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/api/health': typeof ApiHealthRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/api/sentry-example': typeof ApiSentryExampleRoute
+  '/api/upload-url': typeof ApiUploadUrlRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/sentry-example'
+    | '/settings'
     | '/signup'
     | '/verify-otp'
     | '/api/health'
     | '/api/send-email'
     | '/api/sentry-example'
+    | '/api/upload-url'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/sentry-example'
+    | '/settings'
     | '/signup'
     | '/verify-otp'
     | '/api/health'
     | '/api/send-email'
     | '/api/sentry-example'
+    | '/api/upload-url'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/login'
     | '/sentry-example'
+    | '/settings'
     | '/signup'
     | '/verify-otp'
     | '/api/health'
     | '/api/send-email'
     | '/api/sentry-example'
+    | '/api/upload-url'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SentryExampleRoute: typeof SentryExampleRoute
+  SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiSendEmailRoute: typeof ApiSendEmailRoute
   ApiSentryExampleRoute: typeof ApiSentryExampleRoute
+  ApiUploadUrlRoute: typeof ApiUploadUrlRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -163,6 +202,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sentry-example': {
       id: '/sentry-example'
       path: '/sentry-example'
@@ -177,11 +223,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/upload-url': {
+      id: '/api/upload-url'
+      path: '/api/upload-url'
+      fullPath: '/api/upload-url'
+      preLoaderRoute: typeof ApiUploadUrlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/sentry-example': {
@@ -217,13 +277,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SentryExampleRoute: SentryExampleRoute,
+  SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiSendEmailRoute: ApiSendEmailRoute,
   ApiSentryExampleRoute: ApiSentryExampleRoute,
+  ApiUploadUrlRoute: ApiUploadUrlRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

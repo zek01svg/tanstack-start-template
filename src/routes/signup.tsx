@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { SignupForm } from "#/features/auth/components/signup-form";
+import { getCurrentUser } from "#/features/auth/session";
+import { getAuthRouteRedirect } from "#/features/auth/session-model";
 
 function SignupPage() {
   return (
@@ -10,5 +12,12 @@ function SignupPage() {
 }
 
 export const Route = createFileRoute("/signup")({
+  beforeLoad: async () => {
+    const redirectTo = getAuthRouteRedirect(await getCurrentUser());
+
+    if (redirectTo) {
+      throw redirect({ to: redirectTo });
+    }
+  },
   component: SignupPage,
 });

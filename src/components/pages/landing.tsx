@@ -64,8 +64,8 @@ export function LandingPage() {
                 <h3 className="text-xl font-medium tracking-tight">Auth on Day One</h3>
               </div>
               <p className="text-sm text-muted-foreground font-light leading-relaxed">
-                Login, signup, password reset, and session management — all pre-wired with
-                Better-Auth. Skip the most time-consuming part of every new project.
+                Sign up, sign in, OTP verification, passkeys, and session management — all pre-wired
+                with Better Auth. Skip the most time-consuming part of every new project.
               </p>
             </div>
           </div>
@@ -91,8 +91,8 @@ export function LandingPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
-                Transactional email with Resend and React Email. Verification and password reset
-                templates included.
+                Transactional email with Resend and React Email. OTP and verification templates
+                included, sender identity configurable via env.
               </p>
             </div>
 

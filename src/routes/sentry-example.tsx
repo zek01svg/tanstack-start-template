@@ -3,6 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { logger } from "#/lib/logger";
 
 export const Route = createFileRoute("/sentry-example")({
+  beforeLoad: () => {
+    if (import.meta.env.PROD) {
+      throw new Error("Not found");
+    }
+  },
   component: SentryClientPage,
 });
 
