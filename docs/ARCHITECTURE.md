@@ -18,8 +18,10 @@ This project follows a modern SSR architecture using TanStack Start and Nitro.
 │   ├── ARCHITECTURE.md   # This file
 │   ├── CHANGELOG.md      # Release history
 │   ├── DESIGN.md         # Visual system notes
-│   ├── AGENTS.md         # Developer guide for agents
-│   └── CONTRIBUTING.md   # Branch, commit, and test conventions
+│   ├── CONTRIBUTING.md   # Branch, commit, and test conventions
+│   └── DEPLOYMENT.md     # Hosting options and platform config
+├── AGENTS.md             # Developer guide for agents (also CLAUDE.md)
+├── CLAUDE.md             # Claude Code entry point — includes AGENTS.md
 ├── src/
 │   ├── components/
 │   │   ├── layout/       # Header and shell layout

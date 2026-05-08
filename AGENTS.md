@@ -6,25 +6,25 @@ This file is for coding agents. Keep the README for humans, and use this guide f
 
 Read these files before making changes:
 
-- [`src/routes/__root.tsx`](../src/routes/__root.tsx): app shell, provider setup, global document structure.
-- [`src/routes/index.tsx`](../src/routes/index.tsx): landing page route.
-- [`src/components/pages/landing.tsx`](../src/components/pages/landing.tsx): landing page composition.
-- [`src/components/providers/theme-provider.tsx`](../src/components/providers/theme-provider.tsx): `next-themes` wrapper and theme state.
-- [`src/components/ui/theme-toggle.tsx`](../src/components/ui/theme-toggle.tsx): the theme switcher UI.
-- [`src/features/auth/components/*`](../src/features/auth/components): login, signup, and OTP verification forms.
-- [`src/features/notes/notes-fns.ts`](../src/features/notes/notes-fns.ts): notes server functions (list, create, delete).
-- [`src/features/notes/notes-model.ts`](../src/features/notes/notes-model.ts): note validation and ownership helpers.
-- [`src/features/emails/email-guard.ts`](../src/features/emails/email-guard.ts): send-email authorization logic.
-- [`src/lib/auth.ts`](../src/lib/auth.ts) and [`src/lib/auth-client.ts`](../src/lib/auth-client.ts): Better Auth server/client setup.
-- [`src/lib/mailer.ts`](../src/lib/mailer.ts): Resend email sender — lazy init, throws clearly if `RESEND_API_KEY` is missing.
-- [`src/lib/storage.ts`](../src/lib/storage.ts): S3-compatible presigned upload client — returns `null` if `MINIO_ENDPOINT` is not set.
-- [`src/lib/logger.ts`](../src/lib/logger.ts): LogTape app logger and sink configuration.
-- [`instrument.server.mjs`](../instrument.server.mjs): server bootstrap for Sentry and logging.
-- [`src/start.ts`](../src/start.ts): request middleware and server-side logging entrypoint.
-- [`src/router.tsx`](../src/router.tsx): client bootstrap for Sentry and logging.
-- [`src/components/ui/*`](../src/components/ui): shared UI primitives.
-- [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md): higher-level system overview.
-- [`package.json`](../package.json): source of truth for scripts.
+- [`src/routes/__root.tsx`](src/routes/__root.tsx): app shell, provider setup, global document structure.
+- [`src/routes/index.tsx`](src/routes/index.tsx): landing page route.
+- [`src/components/pages/landing.tsx`](src/components/pages/landing.tsx): landing page composition.
+- [`src/components/providers/theme-provider.tsx`](src/components/providers/theme-provider.tsx): `next-themes` wrapper and theme state.
+- [`src/components/ui/theme-toggle.tsx`](src/components/ui/theme-toggle.tsx): the theme switcher UI.
+- [`src/features/auth/components/*`](src/features/auth/components): login, signup, and OTP verification forms.
+- [`src/features/notes/notes-fns.ts`](src/features/notes/notes-fns.ts): notes server functions (list, create, delete).
+- [`src/features/notes/notes-model.ts`](src/features/notes/notes-model.ts): note validation and ownership helpers.
+- [`src/features/emails/email-guard.ts`](src/features/emails/email-guard.ts): send-email authorization logic.
+- [`src/lib/auth.ts`](src/lib/auth.ts) and [`src/lib/auth-client.ts`](src/lib/auth-client.ts): Better Auth server/client setup.
+- [`src/lib/mailer.ts`](src/lib/mailer.ts): Resend email sender — lazy init, throws clearly if `RESEND_API_KEY` is missing.
+- [`src/lib/storage.ts`](src/lib/storage.ts): S3-compatible presigned upload client — returns `null` if `MINIO_ENDPOINT` is not set.
+- [`src/lib/logger.ts`](src/lib/logger.ts): LogTape app logger and sink configuration.
+- [`instrument.server.mjs`](instrument.server.mjs): server bootstrap for Sentry and logging.
+- [`src/start.ts`](src/start.ts): request middleware and server-side logging entrypoint.
+- [`src/router.tsx`](src/router.tsx): client bootstrap for Sentry and logging.
+- [`src/components/ui/*`](src/components/ui): shared UI primitives.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): higher-level system overview.
+- [`package.json`](package.json): source of truth for scripts.
 
 ## Repository Map
 

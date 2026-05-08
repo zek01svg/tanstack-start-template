@@ -120,6 +120,7 @@ docker run -p 3000:3000 tanstack-start-template
 
 - [Architecture](./docs/ARCHITECTURE.md) — project structure, data flow, auth, and observability.
 - [Design System](./docs/DESIGN.md) — aesthetic and design tokens.
-- [Agents Guide](./docs/AGENTS.md) — rules for coding agents working in this repo.
+- [Agents Guide](./AGENTS.md) — rules for coding agents working in this repo.
+- [Deployment](./docs/DEPLOYMENT.md) — hosting options and platform-specific configuration.
 - [Changelog](./docs/CHANGELOG.md) — version history.
 - [Contributing](./docs/CONTRIBUTING.md) — branch, commit, and test conventions.
