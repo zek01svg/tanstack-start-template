@@ -54,6 +54,7 @@
     "import/first": "error",
     "import/extensions": "off",
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "no-underscore-dangle": ["error", { "allow": ["__dirname", "__appSentryInitialized__"] }],
     "no-restricted-imports": [
       "error",
       {

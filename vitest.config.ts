@@ -11,9 +11,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: [path.resolve(__dirname, "./tests/setup.ts")],
-    exclude: ["node_modules", "coverage", "dist", ".tanstack", "tests/e2e"],
+    exclude: ["node_modules", "coverage", "dist", ".tanstack", "tests/e2e", "tests/integration"],
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "#": path.resolve(__dirname, "./src"),
     },
     coverage: {
       provider: "istanbul",

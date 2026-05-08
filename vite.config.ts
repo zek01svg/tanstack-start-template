@@ -25,11 +25,13 @@ const config = defineConfig(({ mode }) => {
       nitro({ rollupConfig: { external: [/^@sentry\//] } }),
       tailwindcss(),
       tanstackStart(),
-      ...sentryTanstackStart({
-        org: env.VITE_SENTRY_ORG,
-        project: env.VITE_SENTRY_PROJECT,
-        authToken: env.SENTRY_AUTH_TOKEN,
-      }),
+      ...(env.SENTRY_AUTH_TOKEN && env.SENTRY_AUTH_TOKEN !== "your-sentry-auth-token"
+        ? sentryTanstackStart({
+            org: env.VITE_SENTRY_ORG,
+            project: env.VITE_SENTRY_PROJECT,
+            authToken: env.SENTRY_AUTH_TOKEN,
+          })
+        : []),
       viteReact(),
     ],
   };
