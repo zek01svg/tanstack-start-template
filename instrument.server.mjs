@@ -13,7 +13,7 @@ if (!sentryDsn) {
 if (sentryDsn) {
   Sentry.init({
     dsn: sentryDsn,
-    // PII capture is off by default. Enable only after reviewing your data-handling 
+    // PII capture is off by default. Enable only after reviewing your data-handling
     // obligations — set sendDefaultPii: true when you intentionally want request
     // bodies, IP addresses, and user identifiers forwarded to Sentry.
     sendDefaultPii: false,
