@@ -1,6 +1,6 @@
 # Design System
 
-This system focuses on a hyper-minimalist design aesthetic. It prioritizes extreme negative space, centered typography, and a "noir" palette that feels intentional and premium.
+This system focuses on a hyper-minimalist design aesthetic, and prioritizes space and an intentional "noir" palette.
 
 ## Core Aesthetic
 
@@ -10,12 +10,21 @@ This system focuses on a hyper-minimalist design aesthetic. It prioritizes extre
 
 ## Color Palette
 
-### Primary
+Tokens are defined in `src/globals.css` via CSS custom properties consumed by Tailwind CSS v4.
 
-- **Background**: `oklch(0.12 0.02 240)` - Deep midnight blue-grey.
-- **Foreground**: `oklch(0.98 0.01 240)` - Crisp off-white.
-- **Accent**: `oklch(0.7 0.05 240)` - Soft Sky Blue (used for subtle gradients and focus states).
-- **Secondary**: `oklch(0.5 0.02 240)` - Muted slate for secondary text.
+### Dark mode (default)
+
+- **Background**: `oklch(0.145 0 0)` — near-black neutral.
+- **Foreground**: `oklch(0.985 0 0)` — crisp off-white.
+- **Card**: `oklch(0.205 0 0)` — slightly lifted surface.
+- **Muted foreground**: `oklch(0.708 0 0)` — secondary text.
+- **Destructive**: `oklch(0.704 0.191 22.216)` — warm red for destructive actions.
+
+### Light mode
+
+- **Background**: `oklch(1 0 0)` — pure white.
+- **Foreground**: `oklch(0.145 0 0)` — near-black.
+- **Muted foreground**: `oklch(0.556 0 0)` — secondary text.
 
 ## Typography
 

@@ -5,32 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-05-08
-
-### Added
-
-- **Redis Session Storage**: Wired Better Auth's `secondaryStorage` to Upstash Redis (`@upstash/redis`) for distributed, multi-instance-safe session caching. Sessions are now cached in Redis on creation and served from there on every request, removing hot-path reads from PostgreSQL.
-- **Local Redis via SRH**: Added `redis` (Redis 7 Alpine) and `redis-rest` (Serverless Redis HTTP) services to `docker-compose.yaml` so local development uses the same `@upstash/redis` HTTP client as production. Set `UPSTASH_REDIS_REST_URL=http://localhost:8079` and `UPSTASH_REDIS_REST_TOKEN=local_token` in your `.env` to connect.
-
-## [1.0.1] - 2026-04-24
-
-### Fixed
-
-- **CI Pipeline**: Stabilized the testing pipeline by explicitly defining `PLAYWRIGHT_BROWSERS_PATH` and ensuring `.env` is correctly provisioned from `.env.example` in the CI container.
-- **Testing**: Resolved Playwright browser detection issues in Docker by mapping the correct binary paths and configuring `turbo.json` environment variables.
-- **Git Security**: Resolved "dubious ownership" errors in the CI environment by adding global safe directory configurations.
-- **Configuration**: Updated `.env.example` to use the correct URL format for `VITE_SENTRY_DSN`, preventing initialization errors.
-- **Linting**: Migrated `oxlint` configuration to JSON to avoid ESM/TypeScript parsing errors in environments without native TypeScript execution.
-
-## [1.0.0] - 2026-04-24
+## [1.0.0] - 2026-05-01
 
 ### Added
 
 - **Base Stack**: Production-grade integration of TanStack Start, Nitro, Drizzle ORM, and Better Auth.
-- **Authentication**: Full-stack Auth implementation with Google OAuth provider, type-safe environment variables, and end-to-end type safety.
-- **Design System**: Hyper-minimalist aesthetic.
-- **Observability**: Sentry for error tracking and performance monitoring + LogTape-backed structured logging with a Sentry sink and SSR instrumentation.
-- **Architecture**: Scalable feature-based architecture (`src/features`) with a type-safe root route and optimized SSR hooks.
-- **CI and Tooling**: High-performance pipeline using Bun, Turbo orchestration, Oxlint/Oxfmt, Lefthook, and GitHub Actions.
-- **Testing**: Comprehensive testing suite including Playwright E2E flows and Vitest unit/integration tests.
-- **Documentation**: Documentation including `ARCHITECTURE.md`, `DESIGN.md`, and a comprehensive `README.md`.
+- **Authentication**: Email OTP sign-in/sign-up, passkey support, and optional Google OAuth. Rate limited at 20 requests per 60 seconds via Better Auth's built-in rate limiting.
+- **Protected routes**: `/dashboard` and `/settings` require a valid session. Auth routes (`/login`, `/signup`) redirect signed-in users away automatically.
+- **Notes CRUD**: List, create, and delete notes from the dashboard. Notes are scoped to the signed-in user via a `userId` foreign key. Dashboard table powered by `@tanstack/react-table`.
+- **Account settings**: `/settings` route — profile, linked providers, registered passkeys, and delete account.
+- **File uploads**: Presigned PUT upload flow via `POST /api/upload-url`. Works with MinIO (local), AWS S3, Cloudflare R2, or Supabase Storage — swap backends via `MINIO_ENDPOINT`.
+- **Email**: Transactional email with Resend and React Email. OTP and verification templates included. Sender address configurable via `EMAIL_FROM`.
+- **Design System**: Hyper-minimalist dark-first aesthetic with a shadcn-based component library.
+- **Observability**: LogTape structured logging with a Sentry sink and SSR instrumentation.
+- **Architecture**: Feature-based structure (`src/features`) with clear server-function data boundaries.
+- **CI and Tooling**: GitHub Actions pipeline — lint, typecheck, format, unit tests, E2E tests, and build. Bun pinned to `1.3.13` with dependency caching across all jobs.
+- **Testing**: Playwright E2E and Vitest unit test suites. Tests cover auth route guards, notes model, mailer guard, storage validation, and email send guard.
+- **Documentation**: `README.md`, `ARCHITECTURE.md`, `DESIGN.md`, `AGENTS.md`, and `CONTRIBUTING.md`.
+
+### Security
+
+- `sendDefaultPii: false` in Sentry — PII is not forwarded by default.
+- `tracesSampleRate: 0.1` — conservative server trace sampling to control cost.
+- `/sentry-example` and `/api/sentry-example` return 404 in production builds.
+- `POST /api/send-email` requires an authenticated session or a valid `x-email-secret` header matching `EMAIL_API_SECRET`.
+- Google OAuth and Resend are optional — the app boots and authenticates without either configured.

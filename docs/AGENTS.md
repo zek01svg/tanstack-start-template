@@ -12,7 +12,12 @@ Read these files before making changes:
 - [`src/components/providers/theme-provider.tsx`](../src/components/providers/theme-provider.tsx): `next-themes` wrapper and theme state.
 - [`src/components/ui/theme-toggle.tsx`](../src/components/ui/theme-toggle.tsx): the theme switcher UI.
 - [`src/features/auth/components/*`](../src/features/auth/components): login, signup, and OTP verification forms.
+- [`src/features/notes/notes-fns.ts`](../src/features/notes/notes-fns.ts): notes server functions (list, create, delete).
+- [`src/features/notes/notes-model.ts`](../src/features/notes/notes-model.ts): note validation and ownership helpers.
+- [`src/features/emails/email-guard.ts`](../src/features/emails/email-guard.ts): send-email authorization logic.
 - [`src/lib/auth.ts`](../src/lib/auth.ts) and [`src/lib/auth-client.ts`](../src/lib/auth-client.ts): Better Auth server/client setup.
+- [`src/lib/mailer.ts`](../src/lib/mailer.ts): Resend email sender — lazy init, throws clearly if `RESEND_API_KEY` is missing.
+- [`src/lib/storage.ts`](../src/lib/storage.ts): S3-compatible presigned upload client — returns `null` if `MINIO_ENDPOINT` is not set.
 - [`src/lib/logger.ts`](../src/lib/logger.ts): LogTape app logger and sink configuration.
 - [`instrument.server.mjs`](../instrument.server.mjs): server bootstrap for Sentry and logging.
 - [`src/start.ts`](../src/start.ts): request middleware and server-side logging entrypoint.
@@ -27,7 +32,9 @@ Read these files before making changes:
 - `src/components/pages/`: route-level page compositions.
 - `src/components/providers/`: client providers such as theme.
 - `src/components/ui/`: reusable primitives shared across the app.
-- `src/features/`: feature-owned UI and domain logic.
+- `src/features/auth/`: session logic, route guards, settings model, auth forms.
+- `src/features/notes/`: notes server functions and validation model.
+- `src/features/emails/`: email templates, schema, and send guard.
 - `src/lib/`: shared integrations, utilities, and client wrappers.
 - `src/db/`: schema and database access.
 - `tests/unit/`: Vitest tests for components and utilities.
@@ -63,12 +70,15 @@ Use the scripts in `package.json` unless there is a strong reason not to.
 
 ## Auth Flow
 
-- `/login` signs in with email OTP, passkey, or Google.
-- `/signup` sends an email verification code.
+- `/login` signs in with email OTP or passkey. Google OAuth is available when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set — the app functions without them.
+- `/signup` sends an email OTP verification code.
 - `/verify-otp` confirms the code and can optionally register a passkey after sign-up.
+- `/dashboard` and `/settings` are protected — `beforeLoad` calls `getCurrentUser()` and redirects to `/login` when no session is present.
+- `/login` and `/signup` redirect signed-in users to `/dashboard`.
 - Auth UI lives in `src/features/auth/components/*`.
 - Server auth logic lives in `src/lib/auth.ts`.
 - Client auth calls live in `src/lib/auth-client.ts`.
+- Session model helpers (route guard logic, display name) live in `src/features/auth/session-model.ts`.
 
 If you change auth behavior:
 

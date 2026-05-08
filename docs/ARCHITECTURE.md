@@ -2,16 +2,15 @@
 
 This project follows a modern SSR architecture using TanStack Start and Nitro.
 
-## 🧱 Core Stack
+## Core Stack
 
-- **Framework**: [TanStack Start](https://tanstack.com/start) - A full-stack React framework that combines the best of TanStack Router, Query, and SSR.
-- **Server**: [Nitro](https://nitro.unjs.io/) - The open engine for serving applications. It handles the server-side logic and deployment presets.
-- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) - A lightweight, type-safe ORM for PostgreSQL.
-- **Auth**: [Better Auth](https://better-auth.com/) - Email OTP, Google OAuth, and passkey support.
-- **Session Cache**: [Upstash Redis](https://upstash.com/) (`@upstash/redis`) - HTTP-based Redis client used as Better Auth's secondary storage for distributed session caching.
-- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes) - Class-based theme management on `html` with a mounted client toggle.
+- **Framework**: [TanStack Start](https://tanstack.com/start) — full-stack React with TanStack Router, server functions, and SSR.
+- **Server**: [Nitro](https://nitro.unjs.io/) — handles server-side logic and deployment presets.
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) — type-safe PostgreSQL access.
+- **Auth**: [Better Auth](https://better-auth.com/) — email OTP, passkeys, and optional Google OAuth. Rate limited at the Better Auth layer (20 req/60 s).
+- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes) — class-based theme management on `html` with a mounted client toggle.
 
-## 📂 Directory Structure
+## Directory Structure
 
 ```
 .
@@ -19,54 +18,84 @@ This project follows a modern SSR architecture using TanStack Start and Nitro.
 │   ├── ARCHITECTURE.md   # This file
 │   ├── CHANGELOG.md      # Release history
 │   ├── DESIGN.md         # Visual system notes
-│   └── AGENTS.md         # Developer guide for agents
-├── public/               # Static assets
+│   ├── AGENTS.md         # Developer guide for agents
+│   └── CONTRIBUTING.md   # Branch, commit, and test conventions
 ├── src/
 │   ├── components/
-│   │   ├── layout/      # Header and shell layout
-│   │   ├── pages/       # Route-level page compositions
-│   │   ├── providers/   # Client providers such as theme
-│   │   └── ui/          # Reusable UI primitives
-│   ├── db/              # Drizzle schema and client
+│   │   ├── layout/       # Header and shell layout
+│   │   ├── pages/        # Route-level page compositions
+│   │   ├── providers/    # Client providers (theme)
+│   │   └── ui/           # Reusable UI primitives
+│   ├── db/               # Drizzle schema and client
+│   │   ├── schema.ts     # notes table (with userId FK)
+│   │   └── auth-schema.ts# Better Auth tables
 │   ├── features/
-│   │   └── auth/        # Login, signup, and verification forms
-│   ├── lib/             # Reusable utilities, logging, and API clients
-│   │   └── logger.ts    # App logger and sink configuration
-│   ├── routes/          # TanStack Router routes and API handlers
-│   └── globals.css      # Global styles (Tailwind CSS v4)
-├── tests/               # Vitest and Playwright suites
-├── instrument.server.mjs # Server bootstrap for Sentry and logging
+│   │   ├── auth/         # Session logic, route guards, settings model, login/signup/OTP forms
+│   │   ├── emails/       # Email templates, schema, send guard
+│   │   └── notes/        # Notes server functions and model
+│   ├── lib/              # Shared integrations and utilities
+│   │   ├── auth.ts       # Better Auth server config
+│   │   ├── auth-client.ts# Better Auth React client
+│   │   ├── logger.ts     # LogTape app logger and sink config
+│   │   ├── mailer.ts     # Resend email sender (lazy init, optional)
+│   │   ├── storage.ts    # S3-compatible upload client (optional)
+│   │   ├── query-client.tsx
+│   │   └── utils.ts
+│   ├── routes/           # TanStack Router routes and API handlers
+│   │   ├── __root.tsx    # App shell
+│   │   ├── index.tsx     # Landing page
+│   │   ├── login.tsx     # Auth route — redirects signed-in users
+│   │   ├── signup.tsx    # Auth route — redirects signed-in users
+│   │   ├── verify-otp.tsx
+│   │   ├── dashboard.tsx # Protected route — notes CRUD, upload widget
+│   │   ├── settings.tsx  # Protected route — profile, providers, passkeys, delete account
+│   │   ├── sentry-example.tsx # Dev only
+│   │   └── api/
+│   │       ├── auth/$.ts    # Better Auth handler
+│   │       ├── health.ts
+│   │       ├── send-email.ts# Auth-guarded email dispatch
+│   │       ├── upload-url.ts# Auth-guarded presigned PUT URL
+│   │       └── sentry-example.ts # Dev only
+│   └── globals.css       # Global styles (Tailwind CSS v4)
+├── tests/                # Vitest and Playwright suites
+├── instrument.server.mjs # Server bootstrap — Sentry init and logging
 ├── components.json       # shadcn/ui configuration
-├── Dockerfile            # Containerization
-├── drizzle.config.ts     # Drizzle configuration
-├── package.json          # Project dependencies and scripts
-└── turbo.json            # Turbo task orchestration
+├── Dockerfile
+├── drizzle.config.ts
+└── package.json
 ```
 
-## 🔄 Data Flow
+## Data Flow
 
 1. **Routing**: Managed by TanStack Router. `src/routes/__root.tsx` composes the shell, theme provider, header, and page outlet.
-2. **SSR**: TanStack Start handles the initial HTML render on the server using Nitro.
-3. **Pages**: `src/routes/index.tsx`, `src/routes/login.tsx`, `src/routes/signup.tsx`, and `src/routes/verify-otp.tsx` mount the public app flows.
-4. **Auth flow**: `src/features/auth/components/*` talks to `src/lib/auth-client.ts`, which wraps Better Auth. Sign-in and sign-up start with email OTP, then sign-up can offer passkey enrollment.
-5. **API**: `src/routes/api/auth/$.ts` exposes the Better Auth route handler, while `src/routes/api/send-email.ts` and `src/routes/api/health.ts` support app services.
+2. **SSR**: TanStack Start handles the initial HTML render on the server via Nitro.
+3. **Protected routes**: `dashboard.tsx` and `settings.tsx` call `getCurrentUser()` in `beforeLoad`. Unauthenticated requests redirect to `/login`. Auth routes (`/login`, `/signup`) redirect already-signed-in users to `/dashboard`.
+4. **Server functions**: `src/features/notes/notes-fns.ts` exposes `listNotes`, `createNote`, and `deleteNote` via `createServerFn`. Each function re-checks the session server-side.
+5. **Auth flow**: Forms in `src/features/auth/components/*` call `src/lib/auth-client.ts`. `/login` supports email OTP, passkeys, and Google OAuth (when configured). `/signup` sends an OTP; `/verify-otp` confirms it and offers passkey enrollment.
+6. **Email dispatch**: `src/routes/api/send-email.ts` requires either an authenticated session or a valid `x-email-secret` header. Dispatch itself goes through `src/lib/mailer.ts`, which throws a clear error when `RESEND_API_KEY` is not set.
+7. **File uploads**: `src/routes/api/upload-url.ts` generates a presigned PUT URL (S3-compatible). The client uploads directly to storage; the server never proxies file bytes.
 
-## 🔐 Authentication
+## Authentication
 
-Authentication is handled by **Better Auth**. The app currently supports Google OAuth, email OTP sign-in/sign-up, passkey sign-in, and optional passkey enrollment after a successful sign-up verification.
+Handled by **Better Auth**. Supported flows:
 
-### Session Storage
+- **Email OTP** — sign in and sign up via one-time code. Always available.
+- **Passkeys** — register and authenticate with a device credential. Always available.
+- **Google OAuth** — enabled only when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set. The app boots and functions without them.
 
-Better Auth is configured with a `secondaryStorage` adapter backed by **Upstash Redis** (`src/lib/redis.ts`). Session tokens are written to Redis on creation and read from it on every request, offloading hot-path lookups from PostgreSQL and enabling consistent sessions across multiple app instances.
+Rate limiting is configured at 20 requests per 60-second window using Better Auth's built-in `rateLimit` option.
 
-The `@upstash/redis` client communicates over HTTP, making it compatible with both the managed Upstash cloud service (production) and a self-hosted Redis instance fronted by the [Serverless Redis HTTP (SRH)](https://github.com/hiett/serverless-redis-http) adapter (local development via Docker Compose).
+## Styling
 
-## 🎨 Styling
+**Tailwind CSS v4** is integrated via `@tailwindcss/vite`. Theme switching is class-based on the `html` element through `next-themes`.
 
-**Tailwind CSS v4** is integrated directly into the Vite build process via `@tailwindcss/vite`, providing extremely fast build times and a streamlined developer experience. Theme switching is class-based on the `html` element through `next-themes`, so the app can render dark mode immediately and keep the toggle in sync after hydration.
-
-## 🕵️ Observability
+## Observability
 
 ### LogTape + Sentry
 
-LogTape provides the app logger in `src/lib/logger.ts`. The server request middleware in `src/start.ts` logs incoming requests, while the server bootstrap (`instrument.server.mjs`) and client bootstrap (`src/router.tsx`) configure sinks at startup so logs go to the terminal in development and still flow to Sentry. Sentry remains responsible for error tracking, logs, traces, and performance data.
+LogTape provides the app logger in `src/lib/logger.ts`. The server bootstrap (`instrument.server.mjs`) initialises Sentry with:
+
+- `sendDefaultPii: false` — PII is not forwarded by default.
+- `tracesSampleRate: 0.1` — 10% of server traces are sampled to control cost.
+
+Enable `sendDefaultPii: true` and raise `tracesSampleRate` only intentionally, after reviewing your data-handling obligations.
