@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-05-08
+
+### Added
+
+- **Redis Session Storage**: Wired Better Auth's `secondaryStorage` to Upstash Redis (`@upstash/redis`) for distributed, multi-instance-safe session caching. Sessions are now cached in Redis on creation and served from there on every request, removing hot-path reads from PostgreSQL.
+- **Local Redis via SRH**: Added `redis` (Redis 7 Alpine) and `redis-rest` (Serverless Redis HTTP) services to `docker-compose.yaml` so local development uses the same `@upstash/redis` HTTP client as production. Set `UPSTASH_REDIS_REST_URL=http://localhost:8079` and `UPSTASH_REDIS_REST_TOKEN=local_token` in your `.env` to connect.
+
 ## [1.0.1] - 2026-04-24
 
 ### Fixed

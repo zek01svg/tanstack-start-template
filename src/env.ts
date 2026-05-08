@@ -11,6 +11,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     SENTRY_AUTH_TOKEN: z.string().optional(),
     RESEND_API_KEY: z.string().min(1),
+    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   clientPrefix: "VITE_",
   client: {
@@ -28,6 +30,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     // import.meta.env is Vite-only; undefined in Node.js (e.g. drizzle-kit)
     VITE_APP_TITLE: import.meta.env?.VITE_APP_TITLE,
     VITE_SENTRY_DSN: import.meta.env?.VITE_SENTRY_DSN,

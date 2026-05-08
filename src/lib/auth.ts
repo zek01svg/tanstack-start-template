@@ -11,6 +11,7 @@ import { env } from "#/env";
 import { sendEmail } from "#/lib/mailer";
 import { OtpEmail } from "#/features/emails/components/otp-email";
 import { logger } from "#/lib/logger";
+import { redis } from "#/lib/redis";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -19,6 +20,23 @@ export const auth = betterAuth({
   }),
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
+  secondaryStorage: {
+    get: async key => {
+      const val = await redis.get(key);
+      if (val === null) return null;
+      return typeof val === "string" ? val : JSON.stringify(val);
+    },
+    set: async (key, value, ttl) => {
+      if (ttl) {
+        await redis.set(key, value, { ex: ttl });
+      } else {
+        await redis.set(key, value);
+      }
+    },
+    delete: async key => {
+      await redis.del(key);
+    },
+  },
 
   socialProviders: {
     google: {
