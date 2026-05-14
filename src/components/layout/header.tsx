@@ -10,6 +10,18 @@ export function Header() {
   const { data: session } = authClient.useSession();
   const [signingOut, setSigningOut] = useState(false);
 
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
+    setSigningOut(false);
+  };
+
   return (
     <header className="glass-header">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-8">
@@ -34,17 +46,7 @@ export function Header() {
                 variant="ghost"
                 size="sm"
                 disabled={signingOut}
-                onClick={async () => {
-                  setSigningOut(true);
-                  await authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: () => {
-                        window.location.href = "/";
-                      },
-                    },
-                  });
-                  setSigningOut(false);
-                }}
+                onClick={() => void handleSignOut()}
               >
                 <LogOut />
                 Sign out

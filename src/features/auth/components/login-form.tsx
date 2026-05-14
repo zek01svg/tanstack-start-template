@@ -24,14 +24,32 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   const [serverError, setServerError] = useState<string | null>(null);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
 
-  useEffect(() => {
-    if (!PublicKeyCredential.isConditionalMediationAvailable?.()) return;
-    void authClient.signIn.passkey({
-      autoFill: true,
+  const handlePasskeySignIn = async () => {
+    setServerError(null);
+    setPasskeyLoading(true);
+    const result = await authClient.signIn.passkey({
       fetchOptions: {
         onSuccess: () => navigate({ to: "/" }),
+        onError: ctx => setServerError(ctx.error.message),
       },
     });
+    if (result.error) {
+      setServerError(result.error.message ?? "Passkey sign-in failed.");
+    }
+    setPasskeyLoading(false);
+  };
+
+  useEffect(() => {
+    void (async () => {
+      const available = await PublicKeyCredential.isConditionalMediationAvailable();
+      if (!available) return;
+      void authClient.signIn.passkey({
+        autoFill: true,
+        fetchOptions: {
+          onSuccess: () => navigate({ to: "/" }),
+        },
+      });
+    })();
   }, [navigate]);
 
   const form = useForm({
@@ -60,7 +78,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       <form
         onSubmit={e => {
           e.preventDefault();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
       >
         <FieldGroup className="gap-5">
@@ -109,27 +127,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               variant="outline"
               type="button"
               disabled={passkeyLoading}
-              onClick={async () => {
-                setServerError(null);
-                setPasskeyLoading(true);
-                const result = await authClient.signIn.passkey({
-                  fetchOptions: {
-                    onSuccess: () => navigate({ to: "/" }),
-                    onError: ctx => setServerError(ctx.error.message ?? "Passkey sign-in failed."),
-                  },
-                });
-                if (result?.error) {
-                  setServerError(result.error.message ?? "Passkey sign-in failed.");
-                }
-                setPasskeyLoading(false);
-              }}
+              onClick={() => void handlePasskeySignIn()}
             >
               {passkeyLoading ? "Waiting..." : "Sign in with passkey"}
             </Button>
             <Button
               variant="outline"
               type="button"
-              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: "/" })}
+              onClick={() =>
+                void authClient.signIn.social({ provider: "google", callbackURL: "/" })
+              }
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-4">
                 <path

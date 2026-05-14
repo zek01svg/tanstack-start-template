@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "#/lib/utils";
 
 interface ErrorPageProps {
-  error: Error | string | unknown;
+  error: unknown;
   reset?: () => void;
   className?: string;
   title?: string;

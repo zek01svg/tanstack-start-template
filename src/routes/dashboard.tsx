@@ -68,9 +68,11 @@ function DashboardPage() {
           variant="ghost"
           size="sm"
           className="text-destructive hover:text-destructive"
-          onClick={async () => {
-            await deleteNote({ data: { id: info.row.original.id } });
-            setNotes(prev => prev.filter(n => n.id !== info.row.original.id));
+          onClick={() => {
+            const id = info.row.original.id;
+            void deleteNote({ data: { id } }).then(() =>
+              setNotes(prev => prev.filter(n => n.id !== id))
+            );
           }}
         >
           <Trash2 className="size-4" />
@@ -124,7 +126,7 @@ function DashboardPage() {
             <h2 className="text-lg font-semibold">Notes</h2>
           </div>
 
-          <form onSubmit={handleCreateNote} className="flex gap-2">
+          <form onSubmit={e => void handleCreateNote(e)} className="flex gap-2">
             <Input
               placeholder="New note title…"
               value={newTitle}
@@ -258,7 +260,7 @@ function FileUploadCard() {
           type="file"
           accept="image/*,application/pdf,text/plain"
           className="hidden"
-          onChange={handleFileChange}
+          onChange={e => void handleFileChange(e)}
         />
         <Button
           type="button"

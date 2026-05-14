@@ -52,13 +52,13 @@ export function VerifyOtpForm({ email, flow, className, ...props }: VerifyOtpFor
         onRegister={async () => {
           setPasskeyError(null);
           const result = await authClient.passkey.addPasskey({ name: email });
-          if (result?.error) {
+          if (result.error) {
             setPasskeyError(result.error.message ?? "Failed to set up passkey.");
             return;
           }
           await navigate({ to: "/" });
         }}
-        onSkip={() => navigate({ to: "/" })}
+        onSkip={() => void navigate({ to: "/" })}
       />
     );
   }
@@ -68,7 +68,7 @@ export function VerifyOtpForm({ email, flow, className, ...props }: VerifyOtpFor
       <form
         onSubmit={e => {
           e.preventDefault();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
       >
         <FieldGroup className="gap-5">
@@ -138,6 +138,12 @@ function PasskeyPrompt({
 }) {
   const [loading, setLoading] = useState(false);
 
+  const handleRegister = async () => {
+    setLoading(true);
+    await onRegister();
+    setLoading(false);
+  };
+
   return (
     <div className="flex flex-col gap-5">
       <FieldGroup className="gap-5">
@@ -151,15 +157,7 @@ function PasskeyPrompt({
         {error && <FieldError>{error}</FieldError>}
 
         <Field>
-          <Button
-            type="button"
-            disabled={loading}
-            onClick={async () => {
-              setLoading(true);
-              await onRegister();
-              setLoading(false);
-            }}
-          >
+          <Button type="button" disabled={loading} onClick={() => void handleRegister()}>
             {loading ? "Setting up..." : "Set up passkey"}
           </Button>
         </Field>

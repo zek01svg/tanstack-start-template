@@ -15,6 +15,10 @@
     "correctness": "error",
     "suspicious": "error"
   },
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
   "rules": {
     "no-alert": "error",
     "no-console": "error",
@@ -74,6 +78,41 @@
       "files": ["src/env.ts", "playwright.config.ts", "instrument.server.mjs"],
       "rules": {
         "node/no-process-env": "off"
+      }
+    },
+    {
+      "files": ["src/env.ts"],
+      "rules": {
+        "no-unnecessary-condition": "off"
+      }
+    },
+    {
+      "files": ["tests/**"],
+      "rules": {
+        "no-unnecessary-condition": "off",
+        "typescript/no-unsafe-type-assertion": "off"
+      }
+    },
+    {
+      "files": ["src/features/notes/notes-fns.ts"],
+      "rules": {
+        "no-unnecessary-condition": "off"
+      }
+    },
+    {
+      "files": ["src/routes/api/send-email.ts"],
+      "rules": {
+        "no-unnecessary-condition": "off"
+      }
+    },
+    {
+      "files": [
+        "src/features/auth/components/login-form.tsx",
+        "src/features/auth/components/verify-otp.tsx",
+        "src/features/auth/components/signup-form.tsx"
+      ],
+      "rules": {
+        "no-base-to-string": "off"
       }
     }
   ],

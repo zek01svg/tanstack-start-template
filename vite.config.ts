@@ -7,7 +7,7 @@ import { nitro } from "nitro/vite";
 import { defineConfig, createLogger, loadEnv } from "vite";
 
 const logger = createLogger();
-const originalWarn = logger.warn;
+const originalWarn = logger.warn.bind(logger);
 
 logger.warn = (msg, options) => {
   if (msg.includes("Failed to load source map")) return;

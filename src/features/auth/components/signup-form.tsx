@@ -45,7 +45,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
       <form
         onSubmit={e => {
           e.preventDefault();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
       >
         <FieldGroup className="gap-5">
@@ -93,7 +93,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             <Button
               variant="outline"
               type="button"
-              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: "/" })}
+              onClick={() =>
+                void authClient.signIn.social({ provider: "google", callbackURL: "/" })
+              }
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-4">
                 <path

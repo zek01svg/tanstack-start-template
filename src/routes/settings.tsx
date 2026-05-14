@@ -37,10 +37,10 @@ function SettingsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
-    authClient.listAccounts().then(({ data }) => {
+    void (async () => {
+      const { data } = await authClient.listAccounts();
       if (data) setAccounts(data);
-      return data;
-    });
+    })();
   }, []);
 
   async function handleDeletePasskey(passkeyId: string) {
@@ -104,7 +104,7 @@ function SettingsPage() {
                     variant="ghost"
                     size="sm"
                     disabled={deletingPasskey === pk.id}
-                    onClick={() => handleDeletePasskey(pk.id)}
+                    onClick={() => void handleDeletePasskey(pk.id)}
                     className="text-destructive hover:text-destructive"
                   >
                     <Trash2 className="size-4" />
@@ -118,7 +118,7 @@ function SettingsPage() {
             variant="outline"
             size="sm"
             className="mt-3"
-            onClick={() => authClient.passkey.addPasskey()}
+            onClick={() => void authClient.passkey.addPasskey()}
           >
             <KeyRound className="size-4 mr-2" />
             Add passkey
@@ -133,7 +133,7 @@ function SettingsPage() {
                 This permanently deletes your account and all data. This cannot be undone.
               </p>
               <div className="flex gap-2">
-                <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+                <Button variant="destructive" size="sm" onClick={() => void handleDeleteAccount()}>
                   Yes, delete my account
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => setConfirmDelete(false)}>

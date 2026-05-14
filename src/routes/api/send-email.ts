@@ -59,7 +59,7 @@ export const Route = createFileRoute("/api/send-email")({
               });
               break;
             default:
-              throw new Error(`Unhandled email type: ${type}`);
+              throw new Error(`Unhandled email type: ${type as string}`);
           }
 
           const sendResult = await sendEmail(to, subject, emailComponent);

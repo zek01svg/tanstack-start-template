@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { randomUUID } from "node:crypto";
+import { z } from "zod/v4";
 import { env } from "#/env";
 import { auth } from "#/lib/auth";
 import {
@@ -22,11 +23,17 @@ export const Route = createFileRoute("/api/upload-url")({
         }
 
         const body = await request.json();
-        const { filename, contentType, size } = body as {
-          filename: string;
-          contentType: string;
-          size: number;
-        };
+        const parsed = z
+          .object({
+            filename: z.string(),
+            contentType: z.string(),
+            size: z.number(),
+          })
+          .safeParse(body);
+        if (!parsed.success) {
+          return Response.json({ error: "Invalid request body" }, { status: 400 });
+        }
+        const { filename, contentType, size } = parsed.data;
 
         const validationError = validateUploadRequest({ filename, contentType, size });
         if (validationError) {
