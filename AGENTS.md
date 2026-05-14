@@ -1,124 +1,58 @@
-# Agents Guide
+## Workflow Orchestration
 
-This file is for coding agents. Keep the README for humans, and use this guide for the repo-specific rules that matter while editing code.
+### 1. Plan Mode Default
 
-## Start Here
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately - don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
 
-Read these files before making changes:
+### 2. Subagent Strategy
 
-- [`src/routes/__root.tsx`](src/routes/__root.tsx): app shell, provider setup, global document structure.
-- [`src/routes/index.tsx`](src/routes/index.tsx): landing page route.
-- [`src/components/pages/landing.tsx`](src/components/pages/landing.tsx): landing page composition.
-- [`src/components/providers/theme-provider.tsx`](src/components/providers/theme-provider.tsx): `next-themes` wrapper and theme state.
-- [`src/components/ui/theme-toggle.tsx`](src/components/ui/theme-toggle.tsx): the theme switcher UI.
-- [`src/features/auth/components/*`](src/features/auth/components): login, signup, and OTP verification forms.
-- [`src/features/notes/notes-fns.ts`](src/features/notes/notes-fns.ts): notes server functions (list, create, delete).
-- [`src/features/notes/notes-model.ts`](src/features/notes/notes-model.ts): note validation and ownership helpers.
-- [`src/features/emails/email-guard.ts`](src/features/emails/email-guard.ts): send-email authorization logic.
-- [`src/lib/auth.ts`](src/lib/auth.ts) and [`src/lib/auth-client.ts`](src/lib/auth-client.ts): Better Auth server/client setup.
-- [`src/lib/mailer.ts`](src/lib/mailer.ts): Resend email sender — lazy init, throws clearly if `RESEND_API_KEY` is missing.
-- [`src/lib/storage.ts`](src/lib/storage.ts): S3-compatible presigned upload client — returns `null` if `MINIO_ENDPOINT` is not set.
-- [`src/lib/logger.ts`](src/lib/logger.ts): LogTape app logger and sink configuration.
-- [`instrument.server.mjs`](instrument.server.mjs): server bootstrap for Sentry and logging.
-- [`src/start.ts`](src/start.ts): request middleware and server-side logging entrypoint.
-- [`src/router.tsx`](src/router.tsx): client bootstrap for Sentry and logging.
-- [`src/components/ui/*`](src/components/ui): shared UI primitives.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): higher-level system overview.
-- [`package.json`](package.json): source of truth for scripts.
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One task per subagent for focused execution
 
-## Repository Map
+### 3. Self-Improvement Loop
 
-- `src/routes/`: file-based routes and API handlers.
-- `src/components/pages/`: route-level page compositions.
-- `src/components/providers/`: client providers such as theme.
-- `src/components/ui/`: reusable primitives shared across the app.
-- `src/features/auth/`: session logic, route guards, settings model, auth forms.
-- `src/features/notes/`: notes server functions and validation model.
-- `src/features/emails/`: email templates, schema, and send guard.
-- `src/lib/`: shared integrations, utilities, and client wrappers.
-- `src/db/`: schema and database access.
-- `tests/unit/`: Vitest tests for components and utilities.
-- `tests/e2e/`: Playwright browser tests.
-- `docs/`: project documentation.
+- After ANY correction from the user: update `tasks/lessons.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
 
-## Commands
+### 4. Verification Before Done
 
-Use the scripts in `package.json` unless there is a strong reason not to.
+- Never mark a task complete without proving it works
+- Diff behavior between main and your changes when relevant
+- Ask yourself: "Would a staff engineer approve this?"
+- Run tests, check logs, demonstrate correctness
 
-| Command                     | Use                                                       |
-| --------------------------- | --------------------------------------------------------- |
-| `bun run dev`               | Start the app locally.                                    |
-| `bun run typecheck`         | Run TypeScript checks.                                    |
-| `bun run lint`              | Run Oxlint.                                               |
-| `bun run format`            | Check formatting.                                         |
-| `bun run test:unit`         | Run Vitest tests.                                         |
-| `bun run test:e2e`          | Run Playwright tests.                                     |
-| `bunx playwright test --ui` | Open Playwright's interactive mode.                       |
-| `bun run db:push`           | Push schema changes to the local database.                |
-| `bun run auth:generate`     | Regenerate Better Auth types and helpers.                 |
-| `bun run build`             | Build production artifacts when you need a release check. |
+### 5. Demand Elegance (Balanced)
 
-## Working Rules
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes - don't over-engineer
+- Challenge your own work before presenting it
 
-- Prefer the smallest change that fixes the problem.
-- Keep edits inside the file or feature that owns the behavior.
-- Do not edit generated files such as `src/routeTree.gen.ts` by hand.
-- Do not add a new dependency unless the existing stack cannot do the job.
-- Match the current Stark design language: dark default, centered hero, restrained motion, simple surfaces.
-- Keep labels visible. Do not replace labels with placeholder-only forms.
-- Update docs when routes, commands, auth flow, or app structure change.
+### 6. Autonomous Bug Fixing
 
-## Auth Flow
+- When given a bug report: just fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests - then resolve them
+- Zero context switching required from the user
+- Go fix failing CI tests without being told how
 
-- `/login` signs in with email OTP or passkey. Google OAuth is available when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set — the app functions without them.
-- `/signup` sends an email OTP verification code.
-- `/verify-otp` confirms the code and can optionally register a passkey after sign-up.
-- `/dashboard` and `/settings` are protected — `beforeLoad` calls `getCurrentUser()` and redirects to `/login` when no session is present.
-- `/login` and `/signup` redirect signed-in users to `/dashboard`.
-- Auth UI lives in `src/features/auth/components/*`.
-- Server auth logic lives in `src/lib/auth.ts`.
-- Client auth calls live in `src/lib/auth-client.ts`.
-- Session model helpers (route guard logic, display name) live in `src/features/auth/session-model.ts`.
+## Task Management
 
-If you change auth behavior:
+1. **Plan First**: Write plan with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section your todo list
+6. **Capture Lessons**: Update lessons/memory after corrections
 
-- Verify the full flow from form submission to redirect.
-- Check both happy path and error path.
-- Update any email templates or schema changes that the flow depends on.
+## Core Principles
 
-## Theme Flow
-
-- Theme state is handled through `next-themes` in `src/components/providers/theme-provider.tsx`.
-- The toggle lives in `src/components/ui/theme-toggle.tsx`.
-- The app uses class-based theme switching on the `html` element.
-- The loading skeleton exists so the control does not render as a blank gap while the client hydrates.
-
-If you change theme behavior:
-
-- Verify first paint in a fresh browser session.
-- Verify the hydrated toggle still changes the theme.
-- Check both dark and light states.
-
-## UI Rules
-
-- Respect `docs/DESIGN.md` for design decisions.
-- Reuse existing primitives before creating new ones.
-- Prefer `button`, `field`, `input`, `separator`, and `skeleton` components when they fit.
-- Keep components focused. If a file starts owning unrelated behavior, split it.
-- Preserve accessibility defaults: labels, focus states, semantic buttons, and keyboard support.
-
-## Testing Bar
-
-- If the change affects rendering or hydration, test it in a browser, not just in unit tests.
-- If the change affects shared UI logic, add or update a Vitest test.
-- If the change affects auth, verify the whole flow across all touched routes.
-- If the change affects theme or layout, verify both light and dark appearance.
-- Keep test coverage close to the behavior you changed. Do not add broad tests that do not fail when the bug returns.
-
-## Do Not Do
-
-- Do not scatter a feature across unrelated folders.
-- Do not invent a new pattern when an existing one already fits.
-- Do not assume browser-only APIs exist during SSR.
-- Do not rewrite docs just to restate code that is already obvious.
-- Do not leave stale file paths or command names in documentation.
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
