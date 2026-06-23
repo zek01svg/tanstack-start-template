@@ -11,16 +11,16 @@ export const Route = createFileRoute("/sentry-example")({
   component: SentryClientPage,
 });
 
+function handleClick() {
+  const time = new Date().toISOString();
+  logger.info("Button clicked", { time });
+}
+
 function SentryClientPage() {
   useEffect(() => {
     const time = new Date().toISOString();
     logger.info("Mounted sentry test route", { time });
   }, []);
-
-  function handleClick() {
-    const time = new Date().toISOString();
-    logger.info("Button clicked", { time });
-  }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">

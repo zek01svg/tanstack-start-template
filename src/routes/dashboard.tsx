@@ -5,6 +5,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
 import { Trash2, Plus, Upload, CheckCircle } from "lucide-react";
 import { useState, useRef } from "react";
 
@@ -33,7 +34,45 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
 
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    onDelete: (id: number) => void;
+  }
+}
+
 const columnHelper = createColumnHelper<NoteRow>();
+
+const columns = [
+  columnHelper.accessor("title", {
+    header: "Note",
+    cell: info => <span className="text-sm">{info.getValue()}</span>,
+  }),
+  columnHelper.accessor("createdAt", {
+    header: "Created",
+    cell: info => {
+      const date = info.getValue();
+      return (
+        <span className="text-xs text-muted-foreground">
+          {date ? new Date(date).toLocaleDateString() : "—"}
+        </span>
+      );
+    },
+  }),
+  columnHelper.display({
+    id: "actions",
+    cell: info => (
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="text-destructive hover:text-destructive"
+        onClick={() => info.table.options.meta?.onDelete(info.row.original.id)}
+      >
+        <Trash2 className="size-4" />
+      </Button>
+    ),
+  }),
+];
 
 function DashboardPage() {
   const { user } = Route.useRouteContext();
@@ -44,47 +83,17 @@ function DashboardPage() {
   const [newTitle, setNewTitle] = useState("");
   const [creating, setCreating] = useState(false);
 
-  const columns = [
-    columnHelper.accessor("title", {
-      header: "Note",
-      cell: info => <span className="text-sm">{info.getValue()}</span>,
-    }),
-    columnHelper.accessor("createdAt", {
-      header: "Created",
-      cell: info => {
-        const date = info.getValue();
-        return (
-          <span className="text-xs text-muted-foreground">
-            {date ? new Date(date).toLocaleDateString() : "—"}
-          </span>
-        );
-      },
-    }),
-    columnHelper.display({
-      id: "actions",
-      cell: info => (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="text-destructive hover:text-destructive"
-          onClick={() => {
-            const id = info.row.original.id;
-            void deleteNote({ data: { id } }).then(() =>
-              setNotes(prev => prev.filter(n => n.id !== id))
-            );
-          }}
-        >
-          <Trash2 className="size-4" />
-        </Button>
-      ),
-    }),
-  ];
-
   const table = useReactTable({
     data: notes,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta: {
+      onDelete: (id: number) => {
+        void deleteNote({ data: { id } }).then(() =>
+          setNotes(prev => prev.filter(n => n.id !== id))
+        );
+      },
+    },
   });
 
   async function handleCreateNote(e: React.FormEvent) {

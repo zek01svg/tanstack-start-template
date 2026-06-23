@@ -29,6 +29,11 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
+async function handleDeleteAccount() {
+  await authClient.deleteUser({});
+  window.location.href = "/";
+}
+
 function SettingsPage() {
   const { user } = Route.useRouteContext();
   const { data: passkeys } = authClient.useListPasskeys();
@@ -50,11 +55,6 @@ function SettingsPage() {
     } finally {
       setDeletingPasskey(null);
     }
-  }
-
-  async function handleDeleteAccount() {
-    await authClient.deleteUser({});
-    window.location.href = "/";
   }
 
   return (
