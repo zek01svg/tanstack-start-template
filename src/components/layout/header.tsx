@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { LogOut } from "lucide-react";
 import { useState } from "react";
 
 import { authClient } from "#/lib/auth-client";
@@ -23,37 +22,36 @@ export function Header() {
   };
 
   return (
-    <header className="glass-header">
-      <div className="container mx-auto flex h-16 items-center px-4 md:px-8">
-        <nav className="flex w-full items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-            <img
-              className="h-6 w-auto hidden dark:block"
-              src="https://tanstack.com/images/logos/logo-word-white.svg"
-              alt="TanStack"
-            />
-            <img
-              className="h-6 w-auto block dark:hidden"
-              src="https://tanstack.com/images/logos/logo-word-black.svg"
-              alt="TanStack"
-            />
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
+      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-6">
+        <Link
+          to="/"
+          className="font-mono text-sm font-medium tracking-tight transition-opacity hover:opacity-60"
+        >
+          tanstack-start
+        </Link>
 
-          <div className="flex items-center gap-4 md:gap-6">
-            {session?.user && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                disabled={signingOut}
-                onClick={() => void handleSignOut()}
-              >
-                <LogOut />
-                Sign out
-              </Button>
-            )}
-            <ThemeToggle />
-          </div>
+        <nav className="flex items-center gap-1">
+          <a
+            href="https://github.com/zek01svg/tanstack-start-template"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            GitHub
+          </a>
+          {session?.user && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={signingOut}
+              onClick={() => void handleSignOut()}
+            >
+              Sign out
+            </Button>
+          )}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

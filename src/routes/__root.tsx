@@ -70,7 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider defaultTheme="dark" storageKey="template-theme">
+        <ThemeProvider defaultTheme="light" storageKey="template-theme">
           {children}
         </ThemeProvider>
         <Scripts />

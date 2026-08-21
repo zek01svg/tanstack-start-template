@@ -24,7 +24,7 @@ function SentryClientPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <div className="glass-card w-full max-w-md space-y-4 rounded-2xl p-6">
+      <div className="w-full max-w-md space-y-4 rounded-md border border-border p-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Sentry client test</h1>
           <p className="text-sm text-muted-foreground">

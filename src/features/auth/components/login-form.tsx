@@ -118,7 +118,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
           <FieldSeparator>Or</FieldSeparator>
 
-          <Field className="grid gap-3 sm:grid-cols-2">
+          <Field className="grid gap-3">
             <Button
               variant="outline"
               type="button"

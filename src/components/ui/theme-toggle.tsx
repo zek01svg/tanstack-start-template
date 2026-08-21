@@ -2,7 +2,6 @@ import * as React from "react";
 import { useTheme } from "../providers/theme-provider";
 import { cn } from "#/lib/utils";
 import { Moon, Sun } from "lucide-react";
-import { Skeleton } from "./skeleton";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -13,9 +12,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return (
-      <Skeleton aria-hidden="true" className="border-border h-9 w-[70px] rounded-full border" />
-    );
+    return <div aria-hidden="true" className="h-8 w-[68px]" />;
   }
 
   const themes = [
@@ -24,7 +21,7 @@ export function ThemeToggle() {
   ] as const;
 
   return (
-    <div className="border-border bg-muted/50 relative inline-flex items-center gap-1 rounded-full border p-1 shadow-inner">
+    <div className="flex items-center gap-1">
       {themes.map(t => {
         const Icon = t.icon;
         const isActive = theme === t.id;
@@ -35,15 +32,17 @@ export function ThemeToggle() {
             type="button"
             onClick={() => setTheme(t.id)}
             className={cn(
-              "relative flex h-7 w-7 items-center justify-center rounded-full transition-all duration-200 outline-none after:absolute after:content-[''] after:-inset-2 after:pointer-events-none",
+              "flex size-8 items-center justify-center rounded-md transition-colors outline-none",
+              "focus-visible:ring-3 focus-visible:ring-ring/50",
               isActive
-                ? "bg-background text-primary z-10 scale-110 shadow-sm"
-                : "text-muted-foreground hover:bg-background/40 hover:text-foreground"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
             )}
             aria-label={`${t.label} theme`}
+            aria-pressed={isActive}
             title={t.label}
           >
-            <Icon size={14} className={cn("transition-transform", isActive && "scale-110")} />
+            <Icon size={14} />
           </button>
         );
       })}

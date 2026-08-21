@@ -25,7 +25,7 @@ type ThemeProviderProps = PropsWithChildren<
 export function ThemeProvider({
   children,
   attribute = "class",
-  defaultTheme = "dark",
+  defaultTheme = "light",
   storageKey = "template-theme",
   enableColorScheme = true,
   enableSystem = true,

@@ -64,31 +64,48 @@ function DashboardPage() {
   }
 
   return (
-    <main className="stark-gradient min-h-[calc(100vh-4rem)] px-4 py-10 md:px-8">
-      <section className="container mx-auto flex max-w-4xl flex-col gap-8">
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">Dashboard</p>
-          <h1 className="font-heading text-3xl font-bold tracking-tight md:text-4xl">
+    <main className="mx-auto max-w-4xl px-6 py-16">
+      <section className="flex flex-col">
+        <div>
+          <p className="font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase">
+            Dashboard
+          </p>
+          <h1 className="font-heading mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
             Welcome, {getSessionDisplayName(user)}
           </h1>
-          <p className="max-w-2xl text-muted-foreground">
-            This protected route demonstrates the template's complete authenticated app loop,
-            including server functions and real data rendering.
+          <p className="mt-3 max-w-xl text-muted-foreground">
+            A protected route exercising the full loop: session, server functions, database,
+            uploads.
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <DashboardMetric label="Session" value="Active" />
-          <DashboardMetric label="Email" value={user.email} />
-          <DashboardMetric label="Notes" value={String(notes.length)} />
-        </div>
+        <dl className="mt-10 grid gap-6 border-y border-border py-6 sm:grid-cols-3">
+          <div>
+            <dt className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+              Session
+            </dt>
+            <dd className="mt-2 text-lg font-medium">Active</dd>
+          </div>
+          <div>
+            <dt className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+              Email
+            </dt>
+            <dd className="mt-2 truncate text-lg font-medium">{user.email}</dd>
+          </div>
+          <div>
+            <dt className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+              Notes
+            </dt>
+            <dd className="mt-2 text-lg font-medium">{notes.length}</dd>
+          </div>
+        </dl>
 
-        <div className="rounded-lg border border-border bg-card/80 p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
+        <section className="mt-12" aria-label="Notes">
+          <div className="flex items-baseline justify-between gap-4">
             <h2 className="text-lg font-semibold">Notes</h2>
           </div>
 
-          <form onSubmit={e => void handleCreateNote(e)} className="flex gap-2">
+          <form onSubmit={e => void handleCreateNote(e)} className="mt-4 flex gap-2">
             <Input
               placeholder="New note title…"
               value={newTitle}
@@ -96,70 +113,74 @@ function DashboardPage() {
               className="flex-1"
             />
             <Button type="submit" disabled={creating || !newTitle.trim()} size="sm">
-              <Plus className="size-4 mr-1" />
+              <Plus className="size-4" />
               Add
             </Button>
           </form>
 
           {notes.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-4 text-center">
-              No notes yet. Add one above.
+            <p className="py-6 text-sm text-muted-foreground">
+              No notes yet. Add your first one above.
             </p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Note
-                    </th>
-                    <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Created
-                    </th>
-                    <th className="text-right py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Actions
-                    </th>
+            <table className="mt-4 w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th
+                    scope="col"
+                    className="py-2 pr-4 text-left font-mono text-xs tracking-widest text-muted-foreground uppercase"
+                  >
+                    Note
+                  </th>
+                  <th
+                    scope="col"
+                    className="py-2 pr-4 text-left font-mono text-xs tracking-widest text-muted-foreground uppercase"
+                  >
+                    Created
+                  </th>
+                  <th
+                    scope="col"
+                    className="py-2 text-right font-mono text-xs tracking-widest text-muted-foreground uppercase"
+                  >
+                    <span className="sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {notes.map(note => (
+                  <tr key={note.id} className="border-b border-border/60">
+                    <td className="py-2.5 pr-4">{note.title}</td>
+                    <td className="py-2.5 pr-4 font-mono text-xs text-muted-foreground">
+                      {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : "—"}
+                    </td>
+                    <td className="py-2.5 text-right">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        disabled={deletingId === note.id}
+                        aria-label={`Delete note: ${note.title}`}
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => void handleDeleteNote(note.id)}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {notes.map(note => (
-                    <tr key={note.id} className="border-b border-border/50 hover:bg-muted/30">
-                      <td className="py-2 pr-4">
-                        <span className="text-sm">{note.title}</span>
-                      </td>
-                      <td className="py-2 pr-4">
-                        <span className="text-xs text-muted-foreground">
-                          {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : "—"}
-                        </span>
-                      </td>
-                      <td className="py-2 pr-4 text-right">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          disabled={deletingId === note.id}
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => void handleDeleteNote(note.id)}
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           )}
-        </div>
+        </section>
 
         <FileUploadCard />
 
-        <div className="flex gap-4">
+        <div className="mt-12 border-t border-border pt-6">
           <a
             href="/settings"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium underline decoration-border underline-offset-4 hover:decoration-foreground"
           >
-            Account settings →
+            Account settings
           </a>
         </div>
       </section>
@@ -223,22 +244,22 @@ function FileUploadCard() {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card/80 p-6 shadow-sm space-y-4">
+    <section className="mt-12" aria-label="File upload">
       <h2 className="text-lg font-semibold">File upload</h2>
-      <p className="text-sm text-muted-foreground">
-        Demonstrates presigned PUT upload via MinIO. Images and PDFs up to 10 MB.
+      <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+        Presigned PUT upload via MinIO. Images and PDFs up to 10 MB.
       </p>
 
       {status === "done" && uploadedKey ? (
-        <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+        <p className="mt-4 flex items-center gap-2 text-sm">
           <CheckCircle className="size-4" />
-          Uploaded: <code className="text-xs break-all">{uploadedKey}</code>
-        </div>
+          Uploaded: <code className="font-mono text-xs break-all">{uploadedKey}</code>
+        </p>
       ) : status === "error" ? (
-        <p className="text-sm text-destructive">{errorMsg}</p>
+        <p className="mt-4 text-sm text-destructive">{errorMsg}</p>
       ) : null}
 
-      <div>
+      <div className="mt-4">
         <input
           ref={inputRef}
           type="file"
@@ -253,19 +274,10 @@ function FileUploadCard() {
           disabled={status === "uploading"}
           onClick={() => inputRef.current?.click()}
         >
-          <Upload className="size-4 mr-2" />
+          <Upload className="size-4" />
           {status === "uploading" ? "Uploading…" : "Choose file"}
         </Button>
       </div>
-    </div>
-  );
-}
-
-function DashboardMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-card/80 p-4 shadow-sm">
-      <p className="text-xs font-medium uppercase text-muted-foreground">{label}</p>
-      <p className="mt-2 truncate text-lg font-semibold">{value}</p>
-    </div>
+    </section>
   );
 }
